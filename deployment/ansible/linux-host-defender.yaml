@@ -1,0 +1,37 @@
+---
+- hosts: all 
+  become: true
+  vars:
+    console_addr: console.example.com
+    username: defender_installer
+    password: password
+
+  tasks:
+    - name: Create Installation Directory
+      tempfile:
+        state: directory
+        suffix: pcc
+      register: tempdir
+
+    - name: Generate auth token
+      uri:
+        url: "https://{{ console_addr }}/api/v1/authenticate"
+        body_format: json
+        body: {
+          "username": "{{ username }}",
+          "password": "{{ password }}"
+        }
+        method: POST
+      register: auth
+
+    - name: Get Defender installation script
+      uri:
+        url: "https://{{ console_addr }}/api/v1/scripts/defender.sh"   
+        method: POST
+        headers:
+           Authorization: Bearer {{ auth.json.token }}
+        dest: "{{ tempdir.path }}/defender.sh"
+        mode: 0755
+
+    - name: Install Defender
+      command: "{{ tempdir.path }}/defender.sh -c {{ console_addr }} -d none --install-host"
