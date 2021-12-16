@@ -1,35 +1,27 @@
-__author__ = "Simon Melotte"
 
 import json
 import os
 import requests
 from re import search
 
-def getLicenses(base_url, token, image_id = None):
-    if (image_id):
-        url = "https://%s/api/v1/images?id=%s" % ( base_url, image_id )
-    else:
-        url = "https://%s/api/v1/images" % ( base_url )
+def getData(base_url, token, image_id = None):
+    CVE="CVE-2021-44228"
+
+    url = "https://%s/api/v1/stats/vulnerabilities/impacted-resources?cve=%s" % ( base_url ,CVE)
 
     headers = {"content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + token }    
     response = requests.get(url, headers=headers)
-    images = response.json()
 
+    items = response.json()
     
-    csv = open("applications-running-log4j.csv", "w")
-    csv.write("Image;Id;Namespace;osDistro;Package;License\n")
+    if items:
+        for item in items["riskTree"]:
+            image=items["riskTree"][item]
+            for i in image:
+                #print(i)
+                print("Image={};Container={};Host={};".format(i["image"],i["container"],i["host"]))
+       
 
-    for image in images:
-        for pkgs in image["packages"]:
-            for pkg in pkgs["pkgs"]:    
-                if ("log4j" in pkg['name']):
-                    csv.write("{};{};{};{};{};{}\n".format(image['instances'][0]['image'], image['_id'], image['namespaces'], image['installedProducts']['osDistro'], pkg['name'], pkg['license']) )
-                    print("Image={}, id={}, Namespace={}, osDistro={}, Package={}, License={}".format(image['instances'][0]['image'], image['_id'], image['namespaces'], image['installedProducts']['osDistro'], pkg['name'], pkg['license']) )
-
-
-
-    csv.close()
-                    
 def login(base_url, access_key, secret_key): 
     url = "https://%s/api/v1/authenticate" % ( base_url )
 
@@ -55,8 +47,8 @@ def main():
     CONFIG_FILE= os.environ['HOME'] + "/.prismacloud/credentials.json"
     PCC_API_ENDPOINT, ACCESS_KEY_ID, SECRET_KEY = getParamFromJson(CONFIG_FILE)
     token = login(PCC_API_ENDPOINT, ACCESS_KEY_ID, SECRET_KEY)
-    getLicenses(PCC_API_ENDPOINT, token)
-    #getLicenses(PCC_API_ENDPOINT, token, "sha256:07a2849f2f074010c643bf04305e462515d1b9a3615d578b4365f46a005721e3")
+    
+    getData(PCC_API_ENDPOINT, token)
 
 if __name__ == "__main__":
     main()
