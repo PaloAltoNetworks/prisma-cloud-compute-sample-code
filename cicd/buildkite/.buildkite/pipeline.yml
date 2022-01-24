@@ -1,0 +1,20 @@
+env:
+  USERNAME: "<USERNAME or ACCESS KEY>"
+  PASSWORD: "<PASSWORD or SECRET KEY>"
+  CONSOLE: "https://<CONSOLE ADDRESS or SAAS COMPUTE ADDRESS>"
+  APPNAME: "<APP NAME>"
+
+steps:
+  - command: "generate_token.sh"
+    label: "Generate Token"
+  
+  - command: "download_twistcli.sh"
+    label: "download twistcli"
+  - command: "verify_twistcli.sh"
+    label: "verify  twistcli"
+  - command: "build_docker.sh"
+    label: "Build Docker image"
+  - command: "scan_image.sh"
+    label: "Scan image"
+  - command: "cleanup.sh"
+    label: "Cleanup Environment"
