@@ -33,7 +33,7 @@ homebrew: brew install --cask wkhtmltopdf
 ```
 
 ## Environment Variables
-To fun reports with this script you will need 3 environment variables:
+To run reports with this script you will need 3 environment variables:
 
 | Environment Variable     | Description                               |
 |----------------------    |-------------------------------------------|
