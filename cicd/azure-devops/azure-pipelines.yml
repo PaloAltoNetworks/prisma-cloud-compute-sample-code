@@ -1,0 +1,78 @@
+# Docker
+# Build a Docker image 
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: 'latest'
+  image_name: 'testimg'
+  PCC_USER: '<console_username>'
+  PCC_PASS: '<console_password>'
+  PCC_CONSOLE_URL: '<console_url>'
+
+stages:
+- stage: PrismaComputeScan
+  displayName: Prisma Compute Scan
+  jobs:  
+
+  - job: ComputeScan
+    displayName: Compute Scan
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    - task: CmdLine@2
+      inputs:
+        script: |
+          mkdir testimg
+          touch testimg/Dockerfile
+          echo "FROM  adoptopenjdk/openjdk11-openj9:jre-11.0.11_9_openj9-0.26.0-alpine
+
+          # Map to host user with specified group with its uid:guid
+          ARG USER_ID=5050
+          ARG GROUP_ID=5050
+
+          #RUN addgroup -S spring && adduser -S spring -G spring
+          RUN apk update && apk upgrade && apk add --no-cache jq tzdata && addgroup -g 5050 spring && adduser -S -u 5050 -g spring spring && install -d -m 0755 -o spring -g spring /home/spring
+          USER spring:spring
+          ENV TZ=America/Chicago" > testimg/Dockerfile
+          echo $(image_name)
+          echo Tag
+          echo $(tag)
+          cat testimg/Dockerfile
+
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: 'build'
+        Dockerfile: 'testimg/Dockerfile'
+        repository: $(image_name)
+        tags: |
+          $(tag)
+
+    - task: CmdLine@2
+      inputs:
+        script: |
+          echo Image name
+          echo $(image_name)
+          echo Tag
+          echo $(tag)
+
+    - task: CmdLine@2
+      inputs:
+        script: |
+          curl -k -u 3317/ -u $(PCC_USER):$(PCC_PASS) --output ./twistcli $(PCC_CONSOLE_URL)/api/v1/util/twistcli
+          
+          mkdir twistcli-scan
+          mv ./twistcli twistcli-scan/twistcli
+          chmod a+x twistcli-scan/twistcli
+          
+          ls twistcli-scan
+          
+          ./twistcli-scan/twistcli images scan  --address $(PCC_CONSOLE_URL) -u $(PCC_USER) -p $(PCC_PASS) --details $(image_name):$(tag)
+      displayName: 'Twistcli scan'
