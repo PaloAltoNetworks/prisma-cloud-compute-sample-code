@@ -11,9 +11,9 @@ resources:
 variables:
   tag: 'latest'
   image_name: 'testimg'
-  PCC_USER: '3b68ee96-db73-4c46-8cfc-c7a0b512a4f9'
-  PCC_PASS: 'OUOOeW9tIdImIGCcLkpgL8ZV6rY='
-  PCC_CONSOLE_URL: 'https://us-west1.cloud.twistlock.com/us-3-159183317'
+  PCC_USER: '<console_username>'
+  PCC_PASS: '<console_password>'
+  PCC_CONSOLE_URL: '<console_url>'
 
 stages:
 - stage: PrismaComputeScan
