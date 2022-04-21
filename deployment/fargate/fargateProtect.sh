@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# https://cdn.twistlock.com/docs/downloads/Twistlock-API.html#defenders_fargate_json_post
+# API Docs
+# https://prisma.pan.dev/api/cloud/cwpp/defenders#operation/post-defenders-fargate.json
 
 # This Bash script can be used to deploy a Container Defender.
 # To use, update the 4 variables prefixed with `PCC_` below.
@@ -17,6 +18,8 @@ NOPROXY="<NOPROXY>" #comma separated list, if needed
 # If using SaaS, PCC_URL should be the exact value copied from
 # Compute > Manage > System > Utilities > Path to Console
 PCC_URL="<CONSOLE-URL>"
+
+# This will be PCC_URL without the scheme prefix and any path suffix
 SAN_NAME="us-west1.cloud.twistlock.com"
 
 json_auth_data="$(printf '{ "username": "%s", "password": "%s" }' "${PCC_USER}" "${PCC_PASS}")"
@@ -39,6 +42,7 @@ TOKEN=$(curl ${OPTIONS} -H "${HEADER}"  --data  "$json_auth_data"  "${PCC_URL}/a
 #Retrieve current global proxy settings
 CURRENT_PROXY=$(curl -sSLk -H "authorization: Bearer ${TOKEN}" -X GET "$PCC_URL/api/v1/settings/proxy")
 
+# This is where you would pass in a variable/unprotected task ro file
 unprotectedTask=unprotectedTask.json
 
 #Set proxy for this funcation
