@@ -43,4 +43,4 @@ json_auth_data="$(printf '{ "username": "%s", "password": "%s" }' "${PCC_USER}" 
 token=$(curl -sSLk -d "$json_auth_data" -H 'content-type: application/json' "$PCC_URL/api/v1/authenticate" | python -c 'import sys, json; print(json.load(sys.stdin)["token"])')
 
 
-curl -sSLk -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/scripts/defender.sh" --data "$(generate_post_data)" | sudo bash -s -- -c "$SAN_NAME" -d "none" -m --install-host
+curl -sSLk -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/scripts/defender.sh" --data "$(generate_post_data)" | sudo bash -s -- -c "$PCC_SAN" -d "none" -m --install-host

@@ -44,7 +44,7 @@ generate_post_data()
 {
 cat <<EOF
 {
-    "consoleAddr":"us-east1.cloud.twistlock.com",
+    "consoleAddr":"$PCC_SAN",
     "namespace":"twistlock",
     "cluster":"$CLUSTER_NAME",
     "orchestration":"kubernetes",

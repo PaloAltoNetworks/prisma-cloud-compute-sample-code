@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# The command "jq" is required for this script to execute
+
 # API Docs
 # https://prisma.pan.dev/api/cloud/cwpp/defenders#operation/post-defenders-fargate.json
 
@@ -20,6 +22,10 @@ CONSOLE_SAN="" #us-west1.cloud.twistlock.com
 PROXY="" #http://proxy.address
 NOPROXY="" # 169.254.169.254 comma separated list, if needed
 
+#The following variables can be set to customize the embedded function 
+APPID="app-name"
+DATA="/data"
+
 #Will leverage env variables  PCC_USER or PCC_PASS or PCC_URL or PCC_SAN if set. 
 [[ -z "${PCC_USER}" ]] && PCC_USER="${ACCESS_KEY}" || PCC_USER="${PCC_USER}"
 [[ -z "${PCC_PASS}" ]] && PCC_PASS="${SECRET_KEY}" || PCC_PASS="${PCC_PASS}"
@@ -34,21 +40,38 @@ token=$(curl -sSLk -d "$json_auth_data" -H 'content-type: application/json' "$PC
 generate_proxy_data()
 {
 cat <<EOF
-{"httpProxy":"$1","noProxy":"$2"}
+{"httpProxy":"$1",
+"noProxy":"$2"}
 EOF
 }
+
+FILE="$(<Dockerfile)"
+
+generate_post_data()
+{
+cat <<EOF
+{
+    "appID":"$APPID",
+    "dataFolder":"$DATA",
+    "consoleAddr":"$PCC_SAN",
+    "dockerfile":$(jq -Rs . <Dockerfile)
+}
+EOF
+}
+
 
 #Retrieve current global proxy settings
 CURRENT_PROXY=$(curl -sSLk -H "authorization: Bearer ${token}" -X GET "$PCC_URL/api/v1/settings/proxy")
 
-# This is where you would pass in a variable/unprotected task ro file
-unprotectedTask=unprotectedTask.json
-
 #Set proxy for this function
-curl ${OPTIONS} -H "authorization: Bearer ${token}" -X POST "$PCC_URL/api/v1/settings/proxy" --data "$(generate_proxy_data $PROXY $NOPROXY)" 
+curl -sSLk -H "authorization: Bearer ${token}" -X POST "$PCC_URL/api/v1/settings/proxy" --data "$(generate_proxy_data $PROXY $NOPROXY)" 
 
+echo -e "Generating embedded source file "
 #Generate protected task
-curl ${OPTIONS} -H "Authorization: Bearer ${token}" "${PCC_URL}/api/v1/defenders/fargate.json?consoleaddr=${PCC_SAN}&defenderType=appEmbedded" -X POST --data-binary "@${unprotectedTask}" --output protectedTask.json
+curl -sSLk   -H "Authorization: Bearer ${token}" "${PCC_URL}/api/v1/defenders/app-embedded" -X POST --data-raw "$(generate_post_data)" --output app_embedded_embed_app-name.zip  --compressed
+
+echo -e "unzip app_embedded_embed_${APPID}.zip in the currect directory and call 'docker build' to build the image"
 
 #Reset glopbal proxy to original values
-curl ${OPTIONS} -H "authorization: Bearer ${token}" -X POST "$PCC_URL/api/v1/settings/proxy" --data "$CURRENT_PROXY" 
+curl -sSLk -H "authorization: Bearer ${token}" -X POST "$PCC_URL/api/v1/settings/proxy" --data "$CURRENT_PROXY" 
+
