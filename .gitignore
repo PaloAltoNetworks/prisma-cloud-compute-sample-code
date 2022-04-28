@@ -1,2 +1,8 @@
 .DS_Store
 Thumbs.db
+
+app_embedded_embed_*
+twistlock_defender_app_embedded.tar.gz
+protectedTask.json
+Dockerfile-defender.zip
+twistcli
