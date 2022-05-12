@@ -26,7 +26,7 @@ Next you will need to install the required python packages:
 pip install -r requirements.txt
 ```
 
-Finally, you will need to install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) for your platform.
+Finally, you will need to install [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) for your platform.  Use the below command for Mac OS.  
 
 ```
 homebrew: brew install --cask wkhtmltopdf
@@ -40,6 +40,13 @@ To run reports with this script you will need 3 environment variables:
 | COMPUTE_CONSOLE_ADDRESS  | Compute Console address                   |
 | COMPUTE_ACCESS_KEY       | Your username for the instance            |
 | COMPUTE_SECRET_KEY       | Your password                             |
+
+See below for the example commands to set the environment variables. 
+```
+export COMPUTE_CONSOLE_ADDRESS=https://compute-console
+export COMPUTE_ACCESS_KEY=<username or access key>
+export COMPUTE_SECRET_KEY=<password or secret key>
+```
 
 ## Usage Examples
 `create_report.py` creates customized vulnerability and compliance reports using several options. Below are some examples:
