@@ -10,7 +10,7 @@ SECRET_KEY=""
 # PCC_URL should be the exact value copied from
 # Compute > Manage > System > Utilities > Path to Console
 CONSOLE_ADDRESS="" #https://us-west1.cloud.twistlock.com/us-3-xxxxxxxxx
-CONSOLE_SAN="" #us-west1.cloud.twistlock.com
+CONSOLE_SAN="" #us-west1.cloud.twistlock.com #twistlock-console
 
 #Specifiy local private image for Defender depolyment, or leave blank and we will use the public registry
 PRIVATE_IMAGE="" #registry.address/twistlock/defender:defender_21_08_880
@@ -21,6 +21,8 @@ NOPROXY="" # 169.254.169.254 comma separated list, if needed
 
 #Specifiy cluster name here (This is optional but a good practice to control the radar views)
 CLUSTER_NAME="my-cluster"
+
+SUPERVISOR="Central Console"
 
 #Will leverage env variables  PCC_USER or PCC_PASS or PCC_URL or PCC_SAN if set. 
 [[ -z "${PCC_USER}" ]] && PCC_USER="${ACCESS_KEY}" || PCC_USER="${PCC_USER}"
@@ -38,6 +40,8 @@ PUBLIC_IMAGE=$(curl -sSLk -H "authorization: Bearer $token" "$PCC_URL/api/v1/def
 
 [[ -z "${PRIVATE_IMAGE}" ]] && IMAGE="${PUBLIC_IMAGE}" || IMAGE="${PRIVATE_IMAGE}"
 
+#URL Encode the project/supervisor name
+project=`jq -rn --arg x "$SUPERVISOR" '$x|@uri'`
 
 #This will generate the post data that will be sent to the defenders/daemonset.yaml API endpoint
 generate_post_data()
@@ -62,5 +66,5 @@ EOF
 }
 
 #This curl command will generate a daemonset.yaml, that can be deploymed in clusters
-curl -sSLk -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/defenders/daemonset.yaml" --data "$(generate_post_data)" -o daemonset.yaml
+curl -sSkL -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/defenders/daemonset.yaml?projectId=$project" --data "$(generate_post_data)" -o daemonset.yaml 
 echo -e "Use file daemonset.yaml in the currect directory for deployment."
