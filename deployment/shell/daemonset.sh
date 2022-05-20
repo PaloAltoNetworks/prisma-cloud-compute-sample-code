@@ -22,7 +22,7 @@ NOPROXY="" # 169.254.169.254 comma separated list, if needed
 #Specifiy cluster name here (This is optional but a good practice to control the radar views)
 CLUSTER_NAME="my-cluster"
 
-SUPERVISOR="twistlock1"
+SUPERVISOR="Central Console"
 
 #Will leverage env variables  PCC_USER or PCC_PASS or PCC_URL or PCC_SAN if set. 
 [[ -z "${PCC_USER}" ]] && PCC_USER="${ACCESS_KEY}" || PCC_USER="${PCC_USER}"
