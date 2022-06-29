@@ -59,6 +59,7 @@ cat <<EOF
     "collectPodLabels":true,
     "proxy":{"httpProxy":"$PROXY","ca":"","user":"","password":"","noProxy":"$NOPROXY"},
     "taskName":null,
+    "cri":true,
     "nodeSelector":"name: \"example\""
 
 }
@@ -66,5 +67,5 @@ EOF
 }
 
 #This curl command will generate a daemonset.yaml, that can be deploymed in clusters
-curl -sSkL -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/defenders/daemonset.yaml?projectId=$project" --data "$(generate_post_data)" -o daemonset.yaml 
+curl -sSkL -H "authorization: Bearer $token" -X POST "$PCC_URL/api/v1/defenders/daemonset.yaml?project=$project" --data "$(generate_post_data)" -o daemonset.yaml 
 echo -e "Use file daemonset.yaml in the currect directory for deployment."
