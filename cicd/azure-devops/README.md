@@ -67,7 +67,7 @@ For Image scan:
 ```./twistcli images scan  --address $(PCC_CONSOLE_URL) -u $(PCC_USER) -p $(PCC_PASS) --details $(image_name):$(tag)```
 
 For serverless scan:
-```\twistcli.exe serverless scan --address $(PCC_CONSOLE_URL) -u $(PCC_USER) -p $(PCC_PASS) --details $(FUNCTION_ZIP_NAME)```
+```./twistcli.exe serverless scan --address $(PCC_CONSOLE_URL) -u $(PCC_USER) -p $(PCC_PASS) --details $(FUNCTION_ZIP_NAME)```
 
 Example screenshot for serverless scan:
   
