@@ -1,4 +1,11 @@
 # Prisma Cloud Compute Sample Code
+
+---
+
+**IMPORTANT: Please see [SUPPORT.md](SUPPORT.md) for the official support policy for the contents of this repository.**
+
+---
+
 ![Prisma Cloud logo](images/prisma-cloud-logo.png)
 
 The new home for [Twistlock Sample Code](https://github.com/twistlock/sample-code)!
