@@ -59,7 +59,8 @@ cat <<EOF
     "collectPodLabels":true,
     "proxy":{"httpProxy":"$PROXY","ca":"","user":"","password":"","noProxy":"$NOPROXY"},
     "taskName":null,
-    "cri":true,
+    "containerRuntime":"crio",
+    "uniqueHostname":true,
     "nodeSelector":"name: \"example\""
 
 }
