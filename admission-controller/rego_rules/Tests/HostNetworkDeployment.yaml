@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment-hostnetwork
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      hostNetwork: true
+      containers:
+      - name: nginx
+        image: nginx:1.16.0
+        ports:
+        - containerPort: 80

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apparmor-pod
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/test2: unconfined
+spec:
+  containers:
+  - name: apparmor
+    image: nginx
+  - name: test2
+    image: nginx

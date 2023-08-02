@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test-daemonset-hostnetwork
+spec:
+  selector:
+    matchLabels:
+      name: test-daemonset-hostnetwork
+  template:
+    metadata:
+      labels:
+        name: test-daemonset-hostnetwork
+    spec:
+      hostNetwork: true
+      containers:
+      - name: test-daemonset-hostnetwork
+        image: nginx

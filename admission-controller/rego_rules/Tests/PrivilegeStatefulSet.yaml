@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test-statefulset-privileged
+spec:
+  serviceName: "test-service"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      hostIPC: true
+      containers:
+      - name: nginx
+        image: nginx:1.16.0
+        ports:
+        - containerPort: 80
+        securityContext:
+          privileged: true
+
+
+
+

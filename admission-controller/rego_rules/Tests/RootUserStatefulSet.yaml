@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-rootuser
+spec:
+  serviceName: "test-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: nginx
+        image: nginx

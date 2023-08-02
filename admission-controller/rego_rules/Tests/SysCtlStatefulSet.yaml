@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test-state-sysctl
+spec:
+  serviceName: "test-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      securityContext:
+        sysctls:
+        - name: net.ipv4.ping_group_range
+          value: "65536"
+        - name: net.core.somaxconn
+          value: "1024"
+      containers:
+      - name: nginx
+        image: nginx:1.16.0
+        ports:
+        - containerPort: 80
+
+
+
+

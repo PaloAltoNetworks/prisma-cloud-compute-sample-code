@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: deployment-hostvolume
+spec:
+  selector:
+    matchLabels:
+      name: my-deployment
+  template:
+    metadata:
+      labels:
+        name: my-deployment
+    spec:
+      containers:
+      - name: my-deployment-container
+        image: nginx:latest
+        volumeMounts:
+        - name: my-volume
+          mountPath: /var/log
+      volumes:
+      - name: my-volume
+        hostPath:
+          path: /
+          type: Directory
