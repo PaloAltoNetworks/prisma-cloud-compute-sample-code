@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: allowedvolumetype-pod
+spec:
+  containers:
+  - name: allowed-volume-type-pod
+    image: nginx
+    volumeMounts:
+    - name: my-volume
+      mountPath: /data
+  volumes:
+  - name: my-volume
+    hostPath:
+      path: /var/log

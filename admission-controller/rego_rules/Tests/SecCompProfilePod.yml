@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-seccomp-allowed
+  labels:
+    app: nginx
+spec:
+  securityContext:
+    seccompProfile:
+      type: Localhost
+      localhostProfile: profile3
+  containers:
+  - name: nginx1
+    image: nginx
+    ports:
+    - containerPort: 80

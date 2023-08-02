@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-priv-escalation
+spec:
+  selector:
+    matchLabels:
+      name: daemonset-priv-escalation
+  template:
+    metadata:
+      labels:
+        name: daemonset-priv-escalation
+    spec:
+      containers:
+      - name: daemonset-priv-escalation
+        image: nginx
+        securityContext:
+          allowPrivilegeEscalation: true

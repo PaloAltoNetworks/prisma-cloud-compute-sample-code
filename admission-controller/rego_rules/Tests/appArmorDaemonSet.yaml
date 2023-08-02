@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: apparmor-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/test2: unconfined
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+
